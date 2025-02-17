@@ -245,7 +245,7 @@
                 <h3>Werkstoffkennwerte</h3>
                 <table>
                     <tr><td>Werkstoff:</td><td id="werkstoff"></td></tr>
-                    <tr><td>Zugfestigkeit:</td><td id="zugfestigkeit">N/mm²</td></tr>
+                    <tr><td>Zugfestigkeit:</td><td id="zugfestigkeit"></td></tr>
                     <tr><td>Streckgrenze:</td><td id="streckgrenze"></td></tr>
                 </table>
             </div>
@@ -323,7 +323,7 @@
 
             if (daten) {
                 document.getElementById("werkstoff").innerText = daten.Werkstoff;
-                document.getElementById("zugfestigkeit").innerText = daten.Zugfestigkeit;
+                document.getElementById("zugfestigkeit").innerText = daten.Zugfestigkeit + " N/mm²";
                 document.getElementById("streckgrenze").innerText = daten.Streckgrenze + " N/mm²";
             }
         }
