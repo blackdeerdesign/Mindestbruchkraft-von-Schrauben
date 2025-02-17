@@ -242,12 +242,11 @@
             </div>
 
             <div class="box result">
-                <h3>Materialdaten</h3>
+                <h3>Werkstoffkennwerte</h3>
                 <table>
-                    <tr><td>Grenzabmaß max:</td><td id="grenzabmass_max_bohrung"></td></tr>
-                    <tr><td>Grenzabmaß min:</td><td id="grenzabmass_min_bohrung"></td></tr>
-                    <tr><td>Minimaler Durchmesser:</td><td id="min_durchmesser_bohrung"></td></tr>
-                    <tr><td>Maximaler Durchmesser:</td><td id="max_durchmesser_bohrung"></td></tr>
+                    <tr><td>Werkstoff:</td><td id="Werkstoff"></td></tr>
+                    <tr><td>Zugfestigkeit:</td><td id="Zugfestigkeit"></td></tr>
+                    <tr><td>Streckgrenze:</td><td id="Streckgrenze"></td></tr>
                 </table>
             </div>
         </div>
@@ -284,18 +283,20 @@
 
     <script>
         let gewindeDaten = {};
+        let materialDaten = {};
 
-        // JSON-Daten laden
-        async function ladeGewindeDaten() {
+        async function ladeDaten() {
             try {
-                const response = await fetch('gewinde_data.json');
-                gewindeDaten = await response.json();
+                const responseGewinde = await fetch('gewinde_data.json');
+                gewindeDaten = await responseGewinde.json();
+
+                const responseMaterial = await fetch('material_data.json');
+                materialDaten = await responseMaterial.json();
             } catch (error) {
-                console.error('Fehler beim Laden der Gewindedaten:', error);
+                console.error('Fehler beim Laden der Daten:', error);
             }
         }
 
-        // Gewindedaten basierend auf der Auswahl setzen
         function aktualisiereGewindedaten() {
             const gewindeSelect = document.getElementById("Gewinde");
             const gewindeBezeichnung = gewindeSelect.value;
@@ -315,12 +316,28 @@
             }
         }
 
-        // Event-Listener hinzufügen, wenn die Seite geladen ist
+        function aktualisiereMaterialdaten() {
+            const werkstoffSelect = document.getElementById("Werkstoff");
+            const werkstoff = werkstoffSelect.value;
+            const daten = materialDaten.find(m => m.Werkstoff === werkstoff);
+
+            if (daten) {
+                document.getElementById("werkstoff").innerText = daten.Werkstoff;
+                document.getElementById("zugfestigkeit").innerText = daten.Zugfestigkeit + " N/mm²";
+                document.getElementById("streckgrenze").innerText = daten.Streckgrenze + " N/mm²";
+            }
+        }
+
+        function aktualisiereDaten() {
+            aktualisiereGewindedaten();
+            aktualisiereMaterialdaten();
+        }
+
         window.onload = async function() {
-            await ladeGewindeDaten();
-            document.getElementById("Gewinde").addEventListener("change", aktualisiereGewindedaten);
+            await ladeDaten();
+            document.getElementById("Gewinde").addEventListener("change", aktualisiereDaten);
+            document.getElementById("Werkstoff").addEventListener("change", aktualisiereDaten);
         };
     </script>
-
 </body>
 </html>
