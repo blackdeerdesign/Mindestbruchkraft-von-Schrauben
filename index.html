@@ -244,9 +244,9 @@
             <div class="box result">
                 <h3>Werkstoffkennwerte</h3>
                 <table>
-                    <tr><td>Werkstoff:</td><td id="Werkstoff"></td></tr>
-                    <tr><td>Zugfestigkeit:</td><td id="Zugfestigkeit"></td></tr>
-                    <tr><td>Streckgrenze:</td><td id="Streckgrenze"></td></tr>
+                    <tr><td>Werkstoff:</td><td id="werkstoff"></td></tr>
+                    <tr><td>Zugfestigkeit:</td><td id="zugfestigkeit"></td></tr>
+                    <tr><td>Streckgrenze:</td><td id="streckgrenze"></td></tr>
                 </table>
             </div>
         </div>
@@ -322,9 +322,9 @@
             const daten = materialDaten.find(m => m.Werkstoff === werkstoff);
 
             if (daten) {
-                document.getElementById("Werkstoff").innerText = daten.Werkstoff;
-                document.getElementById("Zugfestigkeit").innerText = daten.Zugfestigkeit + " N/mm²";
-                document.getElementById("Streckgrenze").innerText = daten.Streckgrenze + " N/mm²";
+                document.getElementById("werkstoff").innerText = daten.Werkstoff;
+                document.getElementById("zugfestigkeit").innerText = daten.Zugfestigkeit + " N/mm²";
+                document.getElementById("streckgrenze").innerText = daten.Streckgrenze + " N/mm²";
             }
         }
 
