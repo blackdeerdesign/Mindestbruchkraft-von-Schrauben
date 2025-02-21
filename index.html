@@ -235,7 +235,7 @@
                 </tr>
                 <tr>
                     <td>Streckgrenze (N):</td>
-                    <td id="streckgrenze"></td>
+                    <td id="streckgrenze_n"></td>
                 </tr>
                 <tr>
                     <td>Streckgrenze (kg):</td>
@@ -264,7 +264,7 @@
                 <table>
                     <tr><td>Werkstoff:</td><td id="werkstoff"></td></tr>
                     <tr><td>Zugfestigkeit:</td><td id="zugfestigkeit"></td></tr>
-                    <tr><td>Streckgrenze:</td><td id="streckgrenze"></td></tr>
+                    <tr><td>Streckgrenze:</td><td id="streckgrenze_nmm"></td></tr>
                 </table>
             </div>
         </div>
@@ -301,14 +301,11 @@
 
 <script>
 
-// Datenspeicher
 let gewindeDaten = {};
 let materialDaten = {};
 
-// Initialer Daten-Load
 async function ladeDaten() {
     try {
-        // Lade beide Datensätze parallel
         const [gewindeAntwort, materialAntwort] = await Promise.all([
             fetch('gewinde_data.json'),
             fetch('material_data.json')
@@ -317,14 +314,12 @@ async function ladeDaten() {
         gewindeDaten = await gewindeAntwort.json();
         materialDaten = await materialAntwort.json();
         
-        // Initialisiere die Anzeige
         aktualisiereAlleWerte();
     } catch (fehler) {
         console.error('Fehler beim Laden der Daten:', fehler);
     }
 }
 
-// Aktualisiert die Gewindedaten in der Anzeige
 function aktualisiereGewindedaten() {
     const ausgewähltesGewinde = document.getElementById("Gewinde").value;
     const daten = gewindeDaten.find(g => g.Gewindebezeichnung === ausgewähltesGewinde);
@@ -343,7 +338,6 @@ function aktualisiereGewindedaten() {
     }
 }
 
-// Aktualisiert die Materialdaten in der Anzeige
 function aktualisiereMaterialdaten() {
     const ausgewähltesWerkstoff = document.getElementById("Werkstoff").value;
     const daten = materialDaten.find(m => m.Werkstoff === ausgewähltesWerkstoff);
@@ -351,7 +345,7 @@ function aktualisiereMaterialdaten() {
     if (daten) {
         document.getElementById("werkstoff").innerText = daten.Werkstoff;
         document.getElementById("zugfestigkeit").innerText = daten.Zugfestigkeit + " N/mm²";
-        document.getElementById("streckgrenze").innerText = daten.Streckgrenze + " N/mm²";
+        document.getElementById("streckgrenze_nmm").innerText = daten.Streckgrenze + " N/mm²";
     }
 }
 
@@ -371,12 +365,12 @@ function berechneMindestbruchkraft() {
 
 function berechneStreckgrenze() {
     const spannungsquerschnitt = parseFloat(document.getElementById("spannungsquerschnitt").innerText);
-    const streckgrenzeText = document.getElementById("streckgrenze").innerText;
+    const streckgrenzeText = document.getElementById("streckgrenze_nmm").innerText;
     const streckgrenze = parseFloat(streckgrenzeText.replace(" N/mm²", ""));
 
     if (!isNaN(spannungsquerschnitt) && !isNaN(streckgrenze)) {
         const streckgrenzeN = Math.round(spannungsquerschnitt * streckgrenze);
-        document.getElementById("streckgrenze").innerText = streckgrenzeN + " N";
+        document.getElementById("streckgrenze_n").innerText = streckgrenzeN + " N";
         
         const streckgrenzeKg = Math.round(streckgrenzeN / 9.81);
         document.getElementById("streckgrenze_kg").innerText = "~ " + streckgrenzeKg + " kg";
