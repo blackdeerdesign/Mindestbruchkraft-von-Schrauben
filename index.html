@@ -292,33 +292,34 @@
 
 
 <script>
-    // Data storage
+
+// Datenspeicher
 let gewindeDaten = {};
 let materialDaten = {};
 
-// Initial data loading
+// Initialer Daten-Load
 async function ladeDaten() {
     try {
-        const [responseGewinde, responseMaterial] = await Promise.all([
+        // Lade beide Datensätze parallel
+        const [gewindeAntwort, materialAntwort] = await Promise.all([
             fetch('gewinde_data.json'),
             fetch('material_data.json')
         ]);
         
-        gewindeDaten = await responseGewinde.json();
-        materialDaten = await responseMaterial.json();
+        gewindeDaten = await gewindeAntwort.json();
+        materialDaten = await materialAntwort.json();
         
-        // Initial update after data is loaded
-        await aktualisiereDaten();
-    } catch (error) {
-        console.error('Fehler beim Laden der Daten:', error);
+        // Initialisiere die Anzeige
+        aktualisiereAlleWerte();
+    } catch (fehler) {
+        console.error('Fehler beim Laden der Daten:', fehler);
     }
 }
 
-// Update thread data
+// Aktualisiert die Gewindedaten in der Anzeige
 function aktualisiereGewindedaten() {
-    const gewindeSelect = document.getElementById("Gewinde");
-    const gewindeBezeichnung = gewindeSelect.value;
-    const daten = gewindeDaten.find(g => g.Gewindebezeichnung === gewindeBezeichnung);
+    const ausgewähltesGewinde = document.getElementById("Gewinde").value;
+    const daten = gewindeDaten.find(g => g.Gewindebezeichnung === ausgewähltesGewinde);
 
     if (daten) {
         document.getElementById("grenzabmass_max").innerText = daten.Gewindebezeichnung;
@@ -334,11 +335,10 @@ function aktualisiereGewindedaten() {
     }
 }
 
-// Update material data
+// Aktualisiert die Materialdaten in der Anzeige
 function aktualisiereMaterialdaten() {
-    const werkstoffSelect = document.getElementById("Werkstoff");
-    const werkstoff = werkstoffSelect.value;
-    const daten = materialDaten.find(m => m.Werkstoff === werkstoff);
+    const ausgewähltesWerkstoff = document.getElementById("Werkstoff").value;
+    const daten = materialDaten.find(m => m.Werkstoff === ausgewähltesWerkstoff);
 
     if (daten) {
         document.getElementById("werkstoff").innerText = daten.Werkstoff;
@@ -347,7 +347,7 @@ function aktualisiereMaterialdaten() {
     }
 }
 
-// Calculate minimum breaking force
+// Berechnet die Mindestbruchkraft neu
 function berechneMindestbruchkraft() {
     const spannungsquerschnitt = parseFloat(document.getElementById("spannungsquerschnitt").innerText);
     const zugfestigkeitText = document.getElementById("zugfestigkeit").innerText;
@@ -362,24 +362,21 @@ function berechneMindestbruchkraft() {
     }
 }
 
-// Main update function
-function aktualisiereDaten() {
+// Hauptfunktion zum Aktualisieren aller Werte
+function aktualisiereAlleWerte() {
     aktualisiereGewindedaten();
     aktualisiereMaterialdaten();
     berechneMindestbruchkraft();
 }
 
-// Initialize on page load
+// Initialisierung beim Laden der Seite
 window.onload = async function() {
     await ladeDaten();
     
-    // Add event listeners for both dropdowns
-    const gewindeSelect = document.getElementById("Gewinde");
-    const werkstoffSelect = document.getElementById("Werkstoff");
-    
-    gewindeSelect.addEventListener("change", aktualisiereDaten);
-    werkstoffSelect.addEventListener("change", aktualisiereDaten);
-}
+    // Event-Listener für beide Dropdowns
+    document.getElementById("Gewinde").addEventListener("change", aktualisiereAlleWerte);
+    document.getElementById("Werkstoff").addEventListener("change", aktualisiereAlleWerte);
+};
 
 
 </script>
