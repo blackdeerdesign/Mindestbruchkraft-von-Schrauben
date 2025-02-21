@@ -301,99 +301,97 @@
 
 <script>
 
-let gewindeDaten = {};
-let materialDaten = {};
+    let gewindeDaten = {};
+    let materialDaten = {};
 
-async function ladeDaten() {
-    try {
-        const [gewindeAntwort, materialAntwort] = await Promise.all([
-            fetch('gewinde_data.json'),
-            fetch('material_data.json')
-        ]);
+    async function ladeDaten() {
+        try {
+            const [gewindeAntwort, materialAntwort] = await Promise.all([
+                fetch('gewinde_data.json'),
+                fetch('material_data.json')
+            ]);
         
-        gewindeDaten = await gewindeAntwort.json();
-        materialDaten = await materialAntwort.json();
+            gewindeDaten = await gewindeAntwort.json();
+            materialDaten = await materialAntwort.json();
         
-        aktualisiereAlleWerte();
-    } catch (fehler) {
-        console.error('Fehler beim Laden der Daten:', fehler);
+            aktualisiereAlleWerte();
+        } catch (fehler) {
+            console.error('Fehler beim Laden der Daten:', fehler);
+        }
     }
-}
 
-function aktualisiereGewindedaten() {
-    const ausgewähltesGewinde = document.getElementById("Gewinde").value;
-    const daten = gewindeDaten.find(g => g.Gewindebezeichnung === ausgewähltesGewinde);
+    function aktualisiereGewindedaten() {
+        const ausgewähltesGewinde = document.getElementById("Gewinde").value;
+        const daten = gewindeDaten.find(g => g.Gewindebezeichnung === ausgewähltesGewinde);
 
-    if (daten) {
-        document.getElementById("grenzabmass_max").innerText = daten.Gewindebezeichnung;
-        document.getElementById("grenzabmass_min").innerText = daten.Steigung;
-        document.getElementById("min_durchmesser").innerText = daten.Flankendurchmesser;
-        document.getElementById("max_durchmesser").innerText = daten.Kerndurchmesser_Aussengewinde;
-        document.getElementById("kerndurchmesser_innen").innerText = daten.Kerndurchmesser_Innengewinde;
-        document.getElementById("gewindetiefe_aussen").innerText = daten.Gewindetiefe_Aussengewinde;
-        document.getElementById("gewindetiefe_innen").innerText = daten.Gewindetiefe_Innengewinde;
-        document.getElementById("rundung").innerText = daten.Rundung;
-        document.getElementById("spannungsquerschnitt").innerText = daten.Spannungsquerschnitt;
-        document.getElementById("gewindekernloch").innerText = daten.Gewindekernloch;
+        if (daten) {
+            document.getElementById("grenzabmass_max").innerText = daten.Gewindebezeichnung;
+            document.getElementById("grenzabmass_min").innerText = daten.Steigung;
+            document.getElementById("min_durchmesser").innerText = daten.Flankendurchmesser;
+            document.getElementById("max_durchmesser").innerText = daten.Kerndurchmesser_Aussengewinde;
+            document.getElementById("kerndurchmesser_innen").innerText = daten.Kerndurchmesser_Innengewinde;
+            document.getElementById("gewindetiefe_aussen").innerText = daten.Gewindetiefe_Aussengewinde;
+            document.getElementById("gewindetiefe_innen").innerText = daten.Gewindetiefe_Innengewinde;
+            document.getElementById("rundung").innerText = daten.Rundung;
+            document.getElementById("spannungsquerschnitt").innerText = daten.Spannungsquerschnitt;
+            document.getElementById("gewindekernloch").innerText = daten.Gewindekernloch;
+        }
     }
-}
 
-function aktualisiereMaterialdaten() {
-    const ausgewähltesWerkstoff = document.getElementById("Werkstoff").value;
-    const daten = materialDaten.find(m => m.Werkstoff === ausgewähltesWerkstoff);
+    function aktualisiereMaterialdaten() {
+        const ausgewähltesWerkstoff = document.getElementById("Werkstoff").value;
+        const daten = materialDaten.find(m => m.Werkstoff === ausgewähltesWerkstoff);
 
-    if (daten) {
-        document.getElementById("werkstoff").innerText = daten.Werkstoff;
-        document.getElementById("zugfestigkeit").innerText = daten.Zugfestigkeit + " N/mm²";
-        document.getElementById("streckgrenze_nmm").innerText = daten.Streckgrenze + " N/mm²";
+        if (daten) {
+            document.getElementById("werkstoff").innerText = daten.Werkstoff;
+            document.getElementById("zugfestigkeit").innerText = daten.Zugfestigkeit + " N/mm²";
+            document.getElementById("streckgrenze_nmm").innerText = daten.Streckgrenze + " N/mm²";
+        }
     }
-}
 
-function berechneMindestbruchkraft() {
-    const spannungsquerschnitt = parseFloat(document.getElementById("spannungsquerschnitt").innerText);
-    const zugfestigkeitText = document.getElementById("zugfestigkeit").innerText;
-    const zugfestigkeit = parseFloat(zugfestigkeitText.replace(" N/mm²", ""));
+    function berechneMindestbruchkraft() {
+        const spannungsquerschnitt = parseFloat(document.getElementById("spannungsquerschnitt").innerText);
+        const zugfestigkeitText = document.getElementById("zugfestigkeit").innerText;
+        const zugfestigkeit = parseFloat(zugfestigkeitText.replace(" N/mm²", ""));
 
-    if (!isNaN(spannungsquerschnitt) && !isNaN(zugfestigkeit)) {
-        const mindestbruchkraft = Math.round(spannungsquerschnitt * zugfestigkeit);
-        document.getElementById("mindestbruchkraft").innerText = mindestbruchkraft + " N";
+        if (!isNaN(spannungsquerschnitt) && !isNaN(zugfestigkeit)) {
+            const mindestbruchkraft = Math.round(spannungsquerschnitt * zugfestigkeit);
+            document.getElementById("mindestbruchkraft").innerText = mindestbruchkraft + " N";
         
-        const mindestbruchkraftKg = Math.round(mindestbruchkraft / 9.81);
-        document.getElementById("mindestbruchkraft_kg").innerText = "~ " + mindestbruchkraftKg + " kg";
+            const mindestbruchkraftKg = Math.round(mindestbruchkraft / 9.81);
+            document.getElementById("mindestbruchkraft_kg").innerText = "~ " + mindestbruchkraftKg + " kg";
+        }
     }
-}
 
-function berechneStreckgrenze() {
-    const spannungsquerschnitt = parseFloat(document.getElementById("spannungsquerschnitt").innerText);
-    const streckgrenzeText = document.getElementById("streckgrenze_nmm").innerText;
-    const streckgrenze = parseFloat(streckgrenzeText.replace(" N/mm²", ""));
+    function berechneStreckgrenze() {
+        const spannungsquerschnitt = parseFloat(document.getElementById("spannungsquerschnitt").innerText);
+        const streckgrenzeText = document.getElementById("streckgrenze_nmm").innerText;
+        const streckgrenze = parseFloat(streckgrenzeText.replace(" N/mm²", ""));
 
-    if (!isNaN(spannungsquerschnitt) && !isNaN(streckgrenze)) {
-        const streckgrenzeN = Math.round(spannungsquerschnitt * streckgrenze);
-        document.getElementById("streckgrenze_n").innerText = streckgrenzeN + " N";
+        if (!isNaN(spannungsquerschnitt) && !isNaN(streckgrenze)) {
+            const streckgrenzeN = Math.round(spannungsquerschnitt * streckgrenze);
+            document.getElementById("streckgrenze_n").innerText = streckgrenzeN + " N";
         
-        const streckgrenzeKg = Math.round(streckgrenzeN / 9.81);
-        document.getElementById("streckgrenze_kg").innerText = "~ " + streckgrenzeKg + " kg";
+            const streckgrenzeKg = Math.round(streckgrenzeN / 9.81);
+            document.getElementById("streckgrenze_kg").innerText = "~ " + streckgrenzeKg + " kg";
+        }
     }
-}
 
-function aktualisiereAlleWerte() {
-    aktualisiereGewindedaten();
-    aktualisiereMaterialdaten();
-    berechneMindestbruchkraft();
-    berechneStreckgrenze();
-}
+    function aktualisiereAlleWerte() {
+        aktualisiereGewindedaten();
+        aktualisiereMaterialdaten();
+        berechneMindestbruchkraft();
+        berechneStreckgrenze();
+    }
 
-// Initialisierung beim Laden der Seite
-window.onload = async function() {
-    await ladeDaten();
+    window.onload = async function() {
+        await ladeDaten();
     
-    // Event-Listener für beide Dropdowns
-    document.getElementById("Gewinde").addEventListener("change", aktualisiereAlleWerte);
-    document.getElementById("Werkstoff").addEventListener("change", aktualisiereAlleWerte);
-};
-
+        document.getElementById("Gewinde").addEventListener("change", aktualisiereAlleWerte);
+        document.getElementById("Werkstoff").addEventListener("change", aktualisiereAlleWerte);
+    };
 
 </script>
+
 </body>
 </html>
