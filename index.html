@@ -228,7 +228,7 @@
             <table>
                 <tr>
                     <td><label for="Zugfestigkeit">Zugfestigkeit:</label></td>
-     		    <td id="zugkraft"></td>
+       	            <td id="zugkraft"></td>
                 </tr>
             </table>
 
@@ -311,7 +311,15 @@
 
         if (daten) {
             document.getElementById("grenzabmass_max").innerText = daten.Gewindebezeichnung;
+            document.getElementById("grenzabmass_min").innerText = daten.Steigung;
+            document.getElementById("min_durchmesser").innerText = daten.Flankendurchmesser;
+            document.getElementById("max_durchmesser").innerText = daten.Kerndurchmesser_Aussengewinde;
+            document.getElementById("kerndurchmesser_innen").innerText = daten.Kerndurchmesser_Innengewinde;
+            document.getElementById("gewindetiefe_aussen").innerText = daten.Gewindetiefe_Aussengewinde;
+            document.getElementById("gewindetiefe_innen").innerText = daten.Gewindetiefe_Innengewinde;
+            document.getElementById("rundung").innerText = daten.Rundung;
             document.getElementById("spannungsquerschnitt").innerText = daten.Spannungsquerschnitt;
+            document.getElementById("gewindekernloch").innerText = daten.Gewindekernloch;
             berechneZugkraft();
         }
     }
@@ -324,6 +332,7 @@
         if (daten) {
             document.getElementById("werkstoff").innerText = daten.Werkstoff;
             document.getElementById("zugfestigkeit").innerText = daten.Zugfestigkeit + " N/mm²";
+            document.getElementById("streckgrenze").innerText = daten.Streckgrenze + " N/mm²";
             berechneZugkraft();
         }
     }
