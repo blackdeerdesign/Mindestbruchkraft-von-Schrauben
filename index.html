@@ -354,22 +354,31 @@
         }
     }
 
-    function aktualisiereDaten() {
+    async function aktualisiereDaten() {
         aktualisiereGewindedaten();
-        aktualisiereMaterialdaten();
+    
+        setTimeout(() => {
+            aktualisiereMaterialdaten();
+            berechneMindestbruchkraft();
+        }, 50);
     }
 
     window.onload = async function() {
         await ladeDaten();
     
-        document.getElementById("Gewinde").addEventListener("change", () => {
-            setTimeout(aktualisiereDaten, 100); // Kleine Verzögerung einbauen
-        });
+        document.getElementById("Gewinde").addEventListener("change", handleDropdownChange);
+        document.getElementById("Werkstoff").addEventListener("change", handleDropdownChange);
 
-        document.getElementById("Werkstoff").addEventListener("change", () => {
-            setTimeout(aktualisiereDaten, 100);
-        });
+        document.getElementById("Gewinde").addEventListener("input", handleDropdownChange);
+        document.getElementById("Werkstoff").addEventListener("input", handleDropdownChange);
     };
+
+    function handleDropdownChange() {
+        setTimeout(() => {
+            aktualisiereDaten();
+        }, 50); // Kurze Verzögerung für sicheres Setzen der Werte
+    }
+
 
 </script>
 </body>
