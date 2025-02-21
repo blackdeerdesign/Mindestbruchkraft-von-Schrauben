@@ -2,7 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Black Deer Design - Zugfestigkeit und Streckgrenze von Schrauben</title>
+    <title>Black Deer Design - Mindestbruchkraft von Schrauben</title>
     <link rel="icon" type="image/png" href="favicon.png">
 
     <style>
@@ -168,15 +168,14 @@
     </header>
 
     <div class="banner">
-        <h1>Zugfestigkeit und Streckgrenze von Schrauben</h1>
+        <h1>Mindestbruchkraft von Schrauben</h1>
     </div>
 
     <main>
 
-		<h4>vgl. DIN EN ISO 898-1 (2013-05)</h4>
-		<h4>vgl. DIN EN ISO 3506-1 (2010-03)</h4>
-		<h5>Metrisches ISO-Gewinde für allgemeine Anwendungen vgl. DIN 13-19 (1999-11=</h5>
-		<h5>Berechnung der Zugfestigkeit Rm und Streckgrenze Re von Schrauben</h5>
+		<h4>vgl. DIN EN ISO 898-1 und DIN EN ISO 3506-1</h4>
+		<h5>Metrisches ISO-Gewinde für allgemeine Anwendungen vgl. DIN 13-19 (1999-11)</h5>
+		<h5>Berechnung der Mindestbruchkraft von Schrauben</h5>
 		<h5>Einfach die gewünschte Schraubengröße und Material auswählen</h5>
 
         <div class="container">
@@ -362,9 +361,16 @@
 
     window.onload = async function() {
         await ladeDaten();
-        document.getElementById("Gewinde").addEventListener("change", aktualisiereDaten);
-        document.getElementById("Werkstoff").addEventListener("change", aktualisiereDaten);
+    
+        document.getElementById("Gewinde").addEventListener("change", () => {
+            setTimeout(aktualisiereDaten, 100); // Kleine Verzögerung einbauen
+        });
+
+        document.getElementById("Werkstoff").addEventListener("change", () => {
+            setTimeout(aktualisiereDaten, 100);
+        });
     };
+
 </script>
 </body>
 </html>
