@@ -359,7 +359,7 @@
 
         if (!isNaN(spannungsquerschnitt) && !isNaN(streckgrenze)) {
             const streckgrenze = spannungsquerschnitt * streckgrenze;
-            document.getElementById("streckgrenze").innerText = zugkraft.toFixed(2) + " N";
+            document.getElementById("streckgrenze").innerText = streckgrenze.toFixed(2) + " N";
         }
     }
 
