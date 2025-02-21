@@ -230,6 +230,10 @@
                     <td><label for="Zugfestigkeit">Zugfestigkeit:</label></td>
        	            <td id="zugkraft"></td>
                 </tr>
+                <tr>
+                    <td><label for="Streckgrenze">Streckgrenze:</label></td>
+       	            <td id="streckgrenze"></td>
+                </tr>
             </table>
 
             <div class="box result">
@@ -345,6 +349,17 @@
         if (!isNaN(spannungsquerschnitt) && !isNaN(zugfestigkeit)) {
             const zugkraft = spannungsquerschnitt * zugfestigkeit;
             document.getElementById("zugkraft").innerText = zugkraft.toFixed(2) + " N";
+        }
+    }
+
+    function berechneStreckgrenze() {
+        const spannungsquerschnitt = parseFloat(document.getElementById("spannungsquerschnitt").innerText);
+        const streckgrenzeText = document.getElementById("streckgrenze").innerText;
+        const streckgrenze = parseFloat(streckgrenzeText.replace(" N/mm²", ""));
+
+        if (!isNaN(spannungsquerschnitt) && !isNaN(streckgrenze)) {
+            const streckgrenze = spannungsquerschnitt * streckgrenze;
+            document.getElementById("streckgrenze").innerText = zugkraft.toFixed(2) + " N";
         }
     }
 
