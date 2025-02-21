@@ -190,20 +190,6 @@
                             <option value="M2">M2</option>
                             <option value="M3">M3</option>
                             <option value="M4">M4</option>
-                        </select>
-                    </td>
-                </tr>
-            </table>
-
-            <table>
-                <tr>
-                    <td><label for="Gewinde">Gewinde:</label></td>
-                    <td>
-                        <select id="Gewinde">
-                            <option value="M1">M1</option>
-                            <option value="M2">M2</option>
-                            <option value="M3">M3</option>
-                            <option value="M4">M4</option>
                             <option value="M5">M5</option>
                             <option value="M6">M6</option>
                             <option value="M7">M7</option>
@@ -236,6 +222,13 @@
                             <option value="A4-70">A4-70</option>
                         </select>
                     </td>
+                </tr>
+            </table>
+
+            <table>
+                <tr>
+                    <td><label for="Zugfestigkeit">Zugfestigkeit:</label></td>
+     		    <td id="zugkraft"></td>
                 </tr>
             </table>
 
@@ -295,63 +288,67 @@
     </footer>
 
 
-    <script>
-        let gewindeDaten = {};
-        let materialDaten = {};
+<script>
+    let gewindeDaten = {};
+    let materialDaten = {};
 
-        async function ladeDaten() {
-            try {
-                const responseGewinde = await fetch('gewinde_data.json');
-                gewindeDaten = await responseGewinde.json();
+    async function ladeDaten() {
+        try {
+            const responseGewinde = await fetch('gewinde_data.json');
+            gewindeDaten = await responseGewinde.json();
 
-                const responseMaterial = await fetch('material_data.json');
-                materialDaten = await responseMaterial.json();
-            } catch (error) {
-                console.error('Fehler beim Laden der Daten:', error);
-            }
+            const responseMaterial = await fetch('material_data.json');
+            materialDaten = await responseMaterial.json();
+        } catch (error) {
+            console.error('Fehler beim Laden der Daten:', error);
         }
+    }
 
-        function aktualisiereGewindedaten() {
-            const gewindeSelect = document.getElementById("Gewinde");
-            const gewindeBezeichnung = gewindeSelect.value;
-            const daten = gewindeDaten.find(g => g.Gewindebezeichnung === gewindeBezeichnung);
+    function aktualisiereGewindedaten() {
+        const gewindeSelect = document.getElementById("Gewinde");
+        const gewindeBezeichnung = gewindeSelect.value;
+        const daten = gewindeDaten.find(g => g.Gewindebezeichnung === gewindeBezeichnung);
 
-            if (daten) {
-                document.getElementById("grenzabmass_max").innerText = daten.Gewindebezeichnung;
-                document.getElementById("grenzabmass_min").innerText = daten.Steigung;
-                document.getElementById("min_durchmesser").innerText = daten.Flankendurchmesser;
-                document.getElementById("max_durchmesser").innerText = daten.Kerndurchmesser_Aussengewinde;
-                document.getElementById("kerndurchmesser_innen").innerText = daten.Kerndurchmesser_Innengewinde;
-                document.getElementById("gewindetiefe_aussen").innerText = daten.Gewindetiefe_Aussengewinde;
-                document.getElementById("gewindetiefe_innen").innerText = daten.Gewindetiefe_Innengewinde;
-                document.getElementById("rundung").innerText = daten.Rundung;
-                document.getElementById("spannungsquerschnitt").innerText = daten.Spannungsquerschnitt;
-                document.getElementById("gewindekernloch").innerText = daten.Gewindekernloch;
-            }
+        if (daten) {
+            document.getElementById("grenzabmass_max").innerText = daten.Gewindebezeichnung;
+            document.getElementById("spannungsquerschnitt").innerText = daten.Spannungsquerschnitt;
+            berechneZugkraft();
         }
+    }
 
-        function aktualisiereMaterialdaten() {
-            const werkstoffSelect = document.getElementById("Werkstoff");
-            const werkstoff = werkstoffSelect.value;
-            const daten = materialDaten.find(m => m.Werkstoff === werkstoff);
+    function aktualisiereMaterialdaten() {
+        const werkstoffSelect = document.getElementById("Werkstoff");
+        const werkstoff = werkstoffSelect.value;
+        const daten = materialDaten.find(m => m.Werkstoff === werkstoff);
 
-            if (daten) {
-                document.getElementById("werkstoff").innerText = daten.Werkstoff;
-                document.getElementById("zugfestigkeit").innerText = daten.Zugfestigkeit + " N/mm²";
-                document.getElementById("streckgrenze").innerText = daten.Streckgrenze + " N/mm²";
-            }
+        if (daten) {
+            document.getElementById("werkstoff").innerText = daten.Werkstoff;
+            document.getElementById("zugfestigkeit").innerText = daten.Zugfestigkeit + " N/mm²";
+            berechneZugkraft();
         }
+    }
 
-        function aktualisiereDaten() {
-            aktualisiereGewindedaten();
-            aktualisiereMaterialdaten();
+    function berechneZugkraft() {
+        const spannungsquerschnitt = parseFloat(document.getElementById("spannungsquerschnitt").innerText);
+        const zugfestigkeitText = document.getElementById("zugfestigkeit").innerText;
+        const zugfestigkeit = parseFloat(zugfestigkeitText.replace(" N/mm²", ""));
+
+        if (!isNaN(spannungsquerschnitt) && !isNaN(zugfestigkeit)) {
+            const zugkraft = spannungsquerschnitt * zugfestigkeit;
+            document.getElementById("zugkraft").innerText = zugkraft.toFixed(2) + " N";
         }
+    }
 
-        window.onload = async function() {
-            await ladeDaten();
-            document.getElementById("Gewinde").addEventListener("change", aktualisiereDaten);
-            document.getElementById("Werkstoff").addEventListener("change", aktualisiereDaten);
-        };
-    </script>
+    function aktualisiereDaten() {
+        aktualisiereGewindedaten();
+        aktualisiereMaterialdaten();
+    }
+
+    window.onload = async function() {
+        await ladeDaten();
+        document.getElementById("Gewinde").addEventListener("change", aktualisiereDaten);
+        document.getElementById("Werkstoff").addEventListener("change", aktualisiereDaten);
+    };
+</script>
 </body>
 </html>
