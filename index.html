@@ -347,10 +347,10 @@
         const zugfestigkeit = parseFloat(zugfestigkeitText.replace(" N/mm²", ""));
 
         if (!isNaN(spannungsquerschnitt) && !isNaN(zugfestigkeit)) {
-            const mindestbruchkraft = spannungsquerschnitt * zugfestigkeit;
+            const mindestbruchkraft = Math.round(spannungsquerschnitt * zugfestigkeit);
             document.getElementById("mindestbruchkraft").innerText = mindestbruchkraft + " N";
             
-            const mindestbruchkraftKg = mindestbruchkraft / 9.81;
+            const mindestbruchkraftKg = Math.round(mindestbruchkraft / 9.81);
             document.getElementById("mindestbruchkraft_kg").innerText = "~ " + mindestbruchkraftKg + " kg";
         }
     }
