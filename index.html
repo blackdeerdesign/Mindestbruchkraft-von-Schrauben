@@ -292,92 +292,94 @@
 
 
 <script>
-    let gewindeDaten = {};
-    let materialDaten = {};
+    // Data storage
+let gewindeDaten = {};
+let materialDaten = {};
 
-    async function ladeDaten() {
-        try {
-            const responseGewinde = await fetch('gewinde_data.json');
-            gewindeDaten = await responseGewinde.json();
-
-            const responseMaterial = await fetch('material_data.json');
-            materialDaten = await responseMaterial.json();
-        } catch (error) {
-            console.error('Fehler beim Laden der Daten:', error);
-        }
+// Initial data loading
+async function ladeDaten() {
+    try {
+        const [responseGewinde, responseMaterial] = await Promise.all([
+            fetch('gewinde_data.json'),
+            fetch('material_data.json')
+        ]);
+        
+        gewindeDaten = await responseGewinde.json();
+        materialDaten = await responseMaterial.json();
+        
+        // Initial update after data is loaded
+        await aktualisiereDaten();
+    } catch (error) {
+        console.error('Fehler beim Laden der Daten:', error);
     }
+}
 
-    function aktualisiereGewindedaten() {
-        const gewindeSelect = document.getElementById("Gewinde");
-        const gewindeBezeichnung = gewindeSelect.value;
-        const daten = gewindeDaten.find(g => g.Gewindebezeichnung === gewindeBezeichnung);
+// Update thread data
+function aktualisiereGewindedaten() {
+    const gewindeSelect = document.getElementById("Gewinde");
+    const gewindeBezeichnung = gewindeSelect.value;
+    const daten = gewindeDaten.find(g => g.Gewindebezeichnung === gewindeBezeichnung);
 
-        if (daten) {
-            document.getElementById("grenzabmass_max").innerText = daten.Gewindebezeichnung;
-            document.getElementById("grenzabmass_min").innerText = daten.Steigung;
-            document.getElementById("min_durchmesser").innerText = daten.Flankendurchmesser;
-            document.getElementById("max_durchmesser").innerText = daten.Kerndurchmesser_Aussengewinde;
-            document.getElementById("kerndurchmesser_innen").innerText = daten.Kerndurchmesser_Innengewinde;
-            document.getElementById("gewindetiefe_aussen").innerText = daten.Gewindetiefe_Aussengewinde;
-            document.getElementById("gewindetiefe_innen").innerText = daten.Gewindetiefe_Innengewinde;
-            document.getElementById("rundung").innerText = daten.Rundung;
-            document.getElementById("spannungsquerschnitt").innerText = daten.Spannungsquerschnitt;
-            document.getElementById("gewindekernloch").innerText = daten.Gewindekernloch;
-            berechneMindestbruchkraft();
-        }
+    if (daten) {
+        document.getElementById("grenzabmass_max").innerText = daten.Gewindebezeichnung;
+        document.getElementById("grenzabmass_min").innerText = daten.Steigung;
+        document.getElementById("min_durchmesser").innerText = daten.Flankendurchmesser;
+        document.getElementById("max_durchmesser").innerText = daten.Kerndurchmesser_Aussengewinde;
+        document.getElementById("kerndurchmesser_innen").innerText = daten.Kerndurchmesser_Innengewinde;
+        document.getElementById("gewindetiefe_aussen").innerText = daten.Gewindetiefe_Aussengewinde;
+        document.getElementById("gewindetiefe_innen").innerText = daten.Gewindetiefe_Innengewinde;
+        document.getElementById("rundung").innerText = daten.Rundung;
+        document.getElementById("spannungsquerschnitt").innerText = daten.Spannungsquerschnitt;
+        document.getElementById("gewindekernloch").innerText = daten.Gewindekernloch;
     }
+}
 
-    function aktualisiereMaterialdaten() {
-        const werkstoffSelect = document.getElementById("Werkstoff");
-        const werkstoff = werkstoffSelect.value;
-        const daten = materialDaten.find(m => m.Werkstoff === werkstoff);
+// Update material data
+function aktualisiereMaterialdaten() {
+    const werkstoffSelect = document.getElementById("Werkstoff");
+    const werkstoff = werkstoffSelect.value;
+    const daten = materialDaten.find(m => m.Werkstoff === werkstoff);
 
-        if (daten) {
-            document.getElementById("werkstoff").innerText = daten.Werkstoff;
-            document.getElementById("zugfestigkeit").innerText = daten.Zugfestigkeit + " N/mm²";
-            document.getElementById("streckgrenze").innerText = daten.Streckgrenze + " N/mm²";
-            berechneZugkraft();
-        }
+    if (daten) {
+        document.getElementById("werkstoff").innerText = daten.Werkstoff;
+        document.getElementById("zugfestigkeit").innerText = daten.Zugfestigkeit + " N/mm²";
+        document.getElementById("streckgrenze").innerText = daten.Streckgrenze + " N/mm²";
     }
+}
 
-    function berechneMindestbruchkraft() {
-        const spannungsquerschnitt = parseFloat(document.getElementById("spannungsquerschnitt").innerText);
-        const zugfestigkeitText = document.getElementById("zugfestigkeit").innerText;
-        const zugfestigkeit = parseFloat(zugfestigkeitText.replace(" N/mm²", ""));
+// Calculate minimum breaking force
+function berechneMindestbruchkraft() {
+    const spannungsquerschnitt = parseFloat(document.getElementById("spannungsquerschnitt").innerText);
+    const zugfestigkeitText = document.getElementById("zugfestigkeit").innerText;
+    const zugfestigkeit = parseFloat(zugfestigkeitText.replace(" N/mm²", ""));
 
-        if (!isNaN(spannungsquerschnitt) && !isNaN(zugfestigkeit)) {
-            const mindestbruchkraft = Math.round(spannungsquerschnitt * zugfestigkeit);
-            document.getElementById("mindestbruchkraft").innerText = mindestbruchkraft + " N";
-            
-            const mindestbruchkraftKg = Math.round(mindestbruchkraft / 9.81);
-            document.getElementById("mindestbruchkraft_kg").innerText = "~ " + mindestbruchkraftKg + " kg";
-        }
+    if (!isNaN(spannungsquerschnitt) && !isNaN(zugfestigkeit)) {
+        const mindestbruchkraft = Math.round(spannungsquerschnitt * zugfestigkeit);
+        document.getElementById("mindestbruchkraft").innerText = mindestbruchkraft + " N";
+        
+        const mindestbruchkraftKg = Math.round(mindestbruchkraft / 9.81);
+        document.getElementById("mindestbruchkraft_kg").innerText = "~ " + mindestbruchkraftKg + " kg";
     }
+}
 
-    async function aktualisiereDaten() {
-        aktualisiereGewindedaten();
+// Main update function
+function aktualisiereDaten() {
+    aktualisiereGewindedaten();
+    aktualisiereMaterialdaten();
+    berechneMindestbruchkraft();
+}
+
+// Initialize on page load
+window.onload = async function() {
+    await ladeDaten();
     
-        setTimeout(() => {
-            aktualisiereMaterialdaten();
-            berechneMindestbruchkraft();
-        }, 50);
-    }
-
-    window.onload = async function() {
-        await ladeDaten();
+    // Add event listeners for both dropdowns
+    const gewindeSelect = document.getElementById("Gewinde");
+    const werkstoffSelect = document.getElementById("Werkstoff");
     
-        document.getElementById("Gewinde").addEventListener("change", handleDropdownChange);
-        document.getElementById("Werkstoff").addEventListener("change", handleDropdownChange);
-
-        document.getElementById("Gewinde").addEventListener("input", handleDropdownChange);
-        document.getElementById("Werkstoff").addEventListener("input", handleDropdownChange);
-    };
-
-    function handleDropdownChange() {
-        setTimeout(() => {
-            aktualisiereDaten();
-        }, 50); // Kurze Verzögerung für sicheres Setzen der Werte
-    }
+    gewindeSelect.addEventListener("change", aktualisiereDaten);
+    werkstoffSelect.addEventListener("change", aktualisiereDaten);
+}
 
 
 </script>
