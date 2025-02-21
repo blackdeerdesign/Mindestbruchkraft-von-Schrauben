@@ -227,12 +227,12 @@
 
             <table>
                 <tr>
-                    <td><label for="Zugfestigkeit">Zugfestigkeit:</label></td>
-       	            <td id="zugkraft"></td>
+                    <td>Mindestbruchkraft:</td>
+                    <td id="mindestbruchkraft"></td>
                 </tr>
                 <tr>
-                    <td><label for="Streckgrenze">Streckgrenze:</label></td>
-       	            <td id="streckgrenze"></td>
+                    <td></td>
+       	            <td></td>
                 </tr>
             </table>
 
@@ -324,7 +324,7 @@
             document.getElementById("rundung").innerText = daten.Rundung;
             document.getElementById("spannungsquerschnitt").innerText = daten.Spannungsquerschnitt;
             document.getElementById("gewindekernloch").innerText = daten.Gewindekernloch;
-            berechneZugkraft();
+            berechneMindestbruchkraft();
         }
     }
 
@@ -341,25 +341,14 @@
         }
     }
 
-    function berechneZugkraft() {
+    function berechneMindestbruchkraft() {
         const spannungsquerschnitt = parseFloat(document.getElementById("spannungsquerschnitt").innerText);
         const zugfestigkeitText = document.getElementById("zugfestigkeit").innerText;
         const zugfestigkeit = parseFloat(zugfestigkeitText.replace(" N/mm²", ""));
 
         if (!isNaN(spannungsquerschnitt) && !isNaN(zugfestigkeit)) {
-            const zugkraft = spannungsquerschnitt * zugfestigkeit;
-            document.getElementById("zugkraft").innerText = zugkraft.toFixed(2) + " N";
-        }
-    }
-
-    function berechneStreckgrenze() {
-        const spannungsquerschnitt = parseFloat(document.getElementById("spannungsquerschnitt").innerText);
-        const streckgrenzeText = document.getElementById("streckgrenze").innerText;
-        const streckgrenze = parseFloat(streckgrenzeText.replace(" N/mm²", ""));
-
-        if (!isNaN(spannungsquerschnitt) && !isNaN(streckgrenze)) {
-            const streckgrenze = spannungsquerschnitt * streckgrenze;
-            document.getElementById("streckgrenze").innerText = streckgrenze.toFixed(2) + " N";
+            const mindestbruchkraft = spannungsquerschnitt * zugfestigkeit;
+            document.getElementById("mindestbruchkraft").innerText = mindestbruchkraft.toFixed(2) + " N";
         }
     }
 
