@@ -233,6 +233,14 @@
                     <td>Mindestbruchkraft (kg):</td>
                     <td id="mindestbruchkraft_kg"></td>
                 </tr>
+                <tr>
+                    <td>Streckgrenze (N):</td>
+                    <td id="streckgrenze"></td>
+                </tr>
+                <tr>
+                    <td>Streckgrenze (kg):</td>
+                    <td id="streckgrenze_kg"></td>
+                </tr>
             </table>
 
             <div class="box result">
@@ -347,7 +355,6 @@ function aktualisiereMaterialdaten() {
     }
 }
 
-// Berechnet die Mindestbruchkraft neu
 function berechneMindestbruchkraft() {
     const spannungsquerschnitt = parseFloat(document.getElementById("spannungsquerschnitt").innerText);
     const zugfestigkeitText = document.getElementById("zugfestigkeit").innerText;
@@ -362,11 +369,25 @@ function berechneMindestbruchkraft() {
     }
 }
 
-// Hauptfunktion zum Aktualisieren aller Werte
+function berechneStreckgrenze() {
+    const spannungsquerschnitt = parseFloat(document.getElementById("spannungsquerschnitt").innerText);
+    const streckgrenzeText = document.getElementById("streckgrenze").innerText;
+    const streckgrenze = parseFloat(streckgrenzeText.replace(" N/mm²", ""));
+
+    if (!isNaN(spannungsquerschnitt) && !isNaN(streckgrenze)) {
+        const streckgrenzeN = Math.round(spannungsquerschnitt * streckgrenze);
+        document.getElementById("streckgrenze").innerText = streckgrenzeN + " N";
+        
+        const streckgrenzeKg = Math.round(streckgrenzeN / 9.81);
+        document.getElementById("streckgrenze_kg").innerText = "~ " + streckgrenzeKg + " kg";
+    }
+}
+
 function aktualisiereAlleWerte() {
     aktualisiereGewindedaten();
     aktualisiereMaterialdaten();
     berechneMindestbruchkraft();
+    berechneStreckgrenze();
 }
 
 // Initialisierung beim Laden der Seite
