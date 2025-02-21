@@ -231,8 +231,8 @@
                     <td id="mindestbruchkraft"></td>
                 </tr>
                 <tr>
-                    <td></td>
-       	            <td></td>
+                    <td>Mindestbruchkraft (kg):</td>
+                    <td id="mindestbruchkraft_kg"></td>
                 </tr>
             </table>
 
@@ -349,6 +349,9 @@
         if (!isNaN(spannungsquerschnitt) && !isNaN(zugfestigkeit)) {
             const mindestbruchkraft = spannungsquerschnitt * zugfestigkeit;
             document.getElementById("mindestbruchkraft").innerText = mindestbruchkraft.toFixed(2) + " N";
+            
+            const mindestbruchkraftKg = mindestbruchkraft / 9.81;
+            document.getElementById("mindestbruchkraft_kg").innerText = mindestbruchkraftKg.toFixed(2) + " kg";
         }
     }
 
